@@ -1,0 +1,36 @@
+.up,
+.down {
+  height: 12px !important;
+  border-radius: 8px;
+  border: none !important;
+}
+
+.up {
+  background: #dd5746 !important;
+}
+.down {
+  background: #f7c566 !important;
+}
+
+.header {
+  background: #e5e5e5;
+}
+
+.header .rct-dateHeader-primary {
+  color: black !important;
+  font-weight: 600 !important;
+}
+/* .rct-sidebar {
+  display: none !important;
+}
+
+.rct-header-root div:first-child {
+  width: 0 !important;
+} */
+
+/* .rct-sidebar {
+  width: 274px !important;
+}
+.rct-sidebar div:first-child {
+  width: 274px !important;
+} */
