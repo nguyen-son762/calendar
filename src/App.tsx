@@ -1,14 +1,10 @@
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Box, hexToRgb } from "@mui/material";
+import { Box } from "@mui/material";
 import "./App.css";
 import Timeline, {
   CustomHeader,
   DateHeader,
-  LabelFormat,
   SidebarHeader,
   TimelineHeaders,
 } from "react-calendar-timeline";
@@ -16,9 +12,8 @@ import "react-calendar-timeline/lib/Timeline.css";
 import moment from "moment";
 import "moment/locale/vi";
 moment.locale("vi");
-import Moment from "react-moment";
 import { format, isSunday, isWeekend } from "date-fns";
-import { da, vi } from "date-fns/locale";
+import { vi } from "date-fns/locale";
 
 export const formatDate = (
   date: Date | string | number,
