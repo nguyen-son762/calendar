@@ -21,7 +21,7 @@ import {
   sub,
 } from "date-fns";
 import { vi } from "date-fns/locale";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const lastDayOfPrecious = [
   new Date("02/28/2024"),
@@ -245,11 +245,28 @@ function areMonthDayEqual(date1: Date, date2: Date) {
     date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate()
   );
 }
-
+const ZOOM_OPTIONS = {
+  DATE: 86400000,
+  MONTH: 60 * 60 * 1000 * 24 * 10,
+  PRECIOUS: 86400000 * 2,
+};
 function App() {
   const [timeOption, setTimeOption] = useState<TimeOptionEnums>(
     TimeOptionEnums.WEEK
   );
+  const [minZoom, setMinZoom] = useState(ZOOM_OPTIONS.MONTH);
+  useEffect(() => {
+    if (timeOption === TimeOptionEnums.MONTH) {
+      setMinZoom(ZOOM_OPTIONS.MONTH);
+    }
+    if (timeOption === TimeOptionEnums.PRECIOUS) {
+      setMinZoom(ZOOM_OPTIONS.PRECIOUS);
+    }
+    if (timeOption === TimeOptionEnums.WEEK) {
+      setMinZoom(ZOOM_OPTIONS.DATE);
+    }
+    console.warn("hehe");
+  }, [timeOption]);
 
   return (
     <Box>
@@ -315,8 +332,29 @@ function App() {
           items={items}
           defaultTimeStart={moment(new Date("08-25-2023")).toDate()}
           defaultTimeEnd={moment(new Date("09-25-2023")).toDate()}
+          visibleTimeStart={moment(new Date("08-25-2023")).toDate()}
+          visibleTimeEnd={moment(new Date("09-25-2023")).toDate()}
           className="calendar"
           sidebarWidth={400}
+          // keys={{
+          //   groupIdKey: "id",
+          //   groupTitleKey: "title",
+          //   itemIdKey: "id",
+          //   itemTitleKey: "title",
+          //   itemDivTitleKey: "title",
+          //   itemGroupKey: "group",
+          //   itemTimeStartKey: "start",
+          //   itemTimeEndKey: "end",
+          // }}
+          timeSteps={{
+            second: 0,
+            minute: 0,
+            hour: 0,
+            day: 1,
+            month: 3,
+            year: 0,
+          }}
+          onZoom={(e) => console.warn("e", e)}
           verticalLineClassNamesForTime={(start, end) => [
             (
               timeOption === TimeOptionEnums.MONTH
@@ -334,6 +372,7 @@ function App() {
           <TimelineHeaders>
             <SidebarHeader>
               {({ getRootProps }) => {
+                console.warn("m", minZoom);
                 return (
                   <div
                     {...getRootProps()}
@@ -359,85 +398,72 @@ function App() {
               }}
             </SidebarHeader>
             <DateHeader
+              height={50}
               unit="primaryHeader"
               labelFormat={(time) => {
                 return formatDate(time[1].toDate());
               }}
               className="header"
             />
-            <CustomHeader height={30} unit="day">
-              {({
-                headerContext: { intervals },
-                getRootProps,
-                getIntervalProps,
-              }: any) => {
-                return (
-                  <div {...getRootProps()}>
-                    {intervals.map((interval: any) => {
-                      const intervalStyle = {
-                        lineHeight: "30px",
-                        textAlign: "center",
-                        borderRight: (
-                          timeOption === TimeOptionEnums.MONTH
-                            ? isLastDayOfMonth(interval.startTime.toDate())
-                            : timeOption === TimeOptionEnums.PRECIOUS
-                            ? lastDayOfPrecious.find((item) =>
-                                areMonthDayEqual(
-                                  item,
-                                  new Date(interval.startTime.toDate())
-                                )
-                              )
-                            : isSunday(interval.startTime.toDate())
-                        )
-                          ? "2px solid #e3e3e3"
-                          : "",
-                        cursor: "pointer",
-                        backgroundColor: "#f2f2f2",
-                        color: (
-                          timeOption === TimeOptionEnums.MONTH ||
-                          timeOption === TimeOptionEnums.PRECIOUS
-                            ? isLastDayOfMonth(interval.startTime.toDate())
-                            : isWeekend(interval.startTime.toDate())
-                        )
-                          ? "#32a54a"
-                          : "#5c5c5c",
-                        fontWeight: "500",
-                      };
-                      return (
-                        <div
-                          {...getIntervalProps({
-                            interval,
-                            style: intervalStyle,
-                          })}
-                        >
-                          <Box
-                            className="sticky"
-                            sx={{
-                              textDecoration: isToday(
-                                sub(interval.startTime.toDate(), {
-                                  months: -1,
-                                })
-                              )
-                                ? "underline"
-                                : "",
-                              textDecorationColor: isToday(
-                                sub(interval.startTime.toDate(), {
-                                  months: -1,
-                                })
-                              )
-                                ? "#32a54b"
-                                : "",
-                            }}
+            {timeOption === TimeOptionEnums.WEEK && (
+              <CustomHeader height={30} unit="day">
+                {({
+                  headerContext: { intervals },
+                  getRootProps,
+                  getIntervalProps,
+                }: any) => {
+                  return (
+                    <div {...getRootProps()}>
+                      {intervals.map((interval: any) => {
+                        const intervalStyle = {
+                          lineHeight: "30px",
+                          textAlign: "center",
+                          borderRight: isSunday(interval.startTime.toDate())
+                            ? "2px solid #e3e3e3"
+                            : "",
+                          cursor: "pointer",
+                          backgroundColor: "#f2f2f2",
+                          color: isWeekend(interval.startTime.toDate())
+                            ? "#32a54a"
+                            : "#5c5c5c",
+                          fontWeight: "500",
+                        };
+                        return (
+                          <div
+                            {...getIntervalProps({
+                              interval,
+                              style: intervalStyle,
+                            })}
                           >
-                            {formatDate(interval.startTime.toDate(), "dd")}
-                          </Box>
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              }}
-            </CustomHeader>
+                            <Box
+                              className="sticky"
+                              sx={{
+                                textDecoration: isToday(
+                                  sub(interval.startTime.toDate(), {
+                                    months: -1,
+                                  })
+                                )
+                                  ? "underline"
+                                  : "",
+                                textDecorationColor: isToday(
+                                  sub(interval.startTime.toDate(), {
+                                    months: -1,
+                                  })
+                                )
+                                  ? "#32a54b"
+                                  : "",
+                              }}
+                            >
+                              {formatDate(interval.startTime.toDate(), "dd")}
+                            </Box>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                }}
+              </CustomHeader>
+            )}
           </TimelineHeaders>
         </Timeline>
       </Box>
