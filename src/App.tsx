@@ -12,8 +12,17 @@ import "react-calendar-timeline/lib/Timeline.css";
 import moment from "moment";
 import "moment/locale/vi";
 moment.locale("vi");
-import { format, isSunday, isWeekend } from "date-fns";
+import {
+  format,
+  isLastDayOfMonth,
+  isSunday,
+  isToday,
+  isWeekend,
+  lastDayOfMonth,
+  sub,
+} from "date-fns";
 import { vi } from "date-fns/locale";
+import { useState } from "react";
 
 export const formatDate = (
   date: Date | string | number,
@@ -181,10 +190,77 @@ const items = [
   },
 ];
 
+enum TimeOptionEnums {
+  TODAY = "today",
+  WEEK = "week",
+  MONTH = "month",
+  PRECIOUS = "precious",
+}
+
 function App() {
+  const [timeOption, setTimeOption] = useState<TimeOptionEnums>(
+    TimeOptionEnums.WEEK
+  );
+
   return (
     <Box>
-      <Box overflow="hidden">
+      <Box overflow="hidden" position="relative">
+        <Box
+          position="absolute"
+          bottom={4}
+          right={20}
+          display="flex"
+          padding={1}
+          bgcolor="#fff"
+          borderRadius="8px"
+          zIndex={999}
+          gap={1}
+        >
+          <Box display="flex" alignItems="center" gap={1}>
+            <Box width={36} height={8} bgcolor="#e33127" borderRadius={9}></Box>
+            <Typography>Kế hoạch</Typography>
+          </Box>
+          <Box display="flex" alignItems="center" gap={1}>
+            <Box width={36} height={8} bgcolor="#d7aa07" borderRadius={9}></Box>
+            <Typography>Thực tế</Typography>
+          </Box>
+          <Box py="4px" px={1} borderRadius="4px">
+            <Typography>Hôm nay</Typography>
+          </Box>
+          <Box
+            bgcolor={timeOption === TimeOptionEnums.WEEK ? "#32a54b" : ""}
+            color={timeOption === TimeOptionEnums.WEEK ? "#f2f2f2" : ""}
+            py="4px"
+            px={1}
+            borderRadius="4px"
+            className="cursor-pointer"
+            onClick={() => setTimeOption(TimeOptionEnums.WEEK)}
+          >
+            <Typography>Tuần</Typography>
+          </Box>
+          <Box
+            bgcolor={timeOption === TimeOptionEnums.MONTH ? "#32a54b" : ""}
+            color={timeOption === TimeOptionEnums.MONTH ? "#f2f2f2" : ""}
+            py="4px"
+            px={1}
+            borderRadius="4px"
+            className="cursor-pointer"
+            onClick={() => setTimeOption(TimeOptionEnums.MONTH)}
+          >
+            <Typography>Tháng</Typography>
+          </Box>
+          <Box
+            bgcolor={timeOption === TimeOptionEnums.PRECIOUS ? "#32a54b" : ""}
+            color={timeOption === TimeOptionEnums.PRECIOUS ? "#f2f2f2" : ""}
+            py="4px"
+            px={1}
+            borderRadius="4px"
+            className="cursor-pointer"
+            onClick={() => setTimeOption(TimeOptionEnums.PRECIOUS)}
+          >
+            <Typography>Quý</Typography>
+          </Box>
+        </Box>
         <Timeline
           groups={groups}
           items={items}
@@ -192,6 +268,15 @@ function App() {
           defaultTimeEnd={moment(new Date("09-25-2023")).toDate()}
           className="calendar"
           sidebarWidth={400}
+          verticalLineClassNamesForTime={(start, end) => [
+            (
+              timeOption === TimeOptionEnums.MONTH
+                ? isLastDayOfMonth(end)
+                : isSunday(end)
+            )
+              ? `border-right`
+              : "border-unset",
+          ]}
         >
           <TimelineHeaders>
             <SidebarHeader>
@@ -280,8 +365,6 @@ function App() {
                 headerContext: { intervals },
                 getRootProps,
                 getIntervalProps,
-                showPeriod,
-                data,
               }: any) => {
                 return (
                   <div {...getRootProps()}>
@@ -289,12 +372,20 @@ function App() {
                       const intervalStyle = {
                         lineHeight: "30px",
                         textAlign: "center",
-                        borderRight: isSunday(interval.startTime.toDate())
+                        borderRight: (
+                          timeOption === TimeOptionEnums.MONTH
+                            ? isLastDayOfMonth(interval.startTime.toDate())
+                            : isSunday(interval.startTime.toDate())
+                        )
                           ? "2px solid #e3e3e3"
                           : "",
                         cursor: "pointer",
                         backgroundColor: "#f2f2f2",
-                        color: isWeekend(interval.startTime.toDate())
+                        color: (
+                          timeOption === TimeOptionEnums.MONTH
+                            ? isLastDayOfMonth(interval.startTime.toDate())
+                            : isWeekend(interval.startTime.toDate())
+                        )
                           ? "#32a54a"
                           : "#5c5c5c",
                         fontWeight: "500",
@@ -306,9 +397,27 @@ function App() {
                             style: intervalStyle,
                           })}
                         >
-                          <div className="sticky">
+                          <Box
+                            className="sticky"
+                            sx={{
+                              textDecoration: isToday(
+                                sub(interval.startTime.toDate(), {
+                                  months: -1,
+                                })
+                              )
+                                ? "underline"
+                                : "",
+                              textDecorationColor: isToday(
+                                sub(interval.startTime.toDate(), {
+                                  months: -1,
+                                })
+                              )
+                                ? "#32a54b"
+                                : "",
+                            }}
+                          >
                             {formatDate(interval.startTime.toDate(), "dd")}
-                          </div>
+                          </Box>
                         </div>
                       );
                     })}

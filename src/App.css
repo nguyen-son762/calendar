@@ -25,25 +25,11 @@
   color: black !important;
   font-weight: 600 !important;
 }
-/* .rct-sidebar {
-  display: none !important;
+.border-unset {
+  border: unset !important;
 }
-
-.rct-header-root div:first-child {
-  width: 0 !important;
-} */
-
-/* .rct-sidebar {
-  width: 274px !important;
-}
-.rct-sidebar div:first-child {
-  width: 274px !important;
-} */
 .rct-dateHeader {
   pointer-events: none !important;
-}
-.react-calendar-timeline .rct-vertical-lines .rct-vl {
-  border-left: unset !important;
 }
 .react-calendar-timeline .rct-vertical-lines .rct-vl.rct-day-6,
 .react-calendar-timeline .rct-vertical-lines .rct-vl.rct-day-0,
@@ -52,10 +38,15 @@
   background: unset !important;
 }
 
-.react-calendar-timeline .rct-vertical-lines .rct-vl.rct-day-0 {
-  border-right: 1px solid #f2f2f2 !important;
-}
 .react-calendar-timeline .rct-sidebar .rct-sidebar-row {
   display: flex;
   align-items: center;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.border-right {
+  border-left: unset !important;
+  border-right: 1px solid #f2f2f2 !important;
 }
