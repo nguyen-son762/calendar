@@ -18,11 +18,17 @@ import {
   isSunday,
   isToday,
   isWeekend,
-  lastDayOfMonth,
   sub,
 } from "date-fns";
 import { vi } from "date-fns/locale";
 import { useState } from "react";
+
+const lastDayOfPrecious = [
+  new Date("02/28/2024"),
+  new Date("05/31/2024"),
+  new Date("08/31/2024"),
+  new Date("11/30/2024"),
+];
 
 export const formatDate = (
   date: Date | string | number,
@@ -167,6 +173,43 @@ const groups = [
     ),
     stackItems: true,
   },
+  {
+    id: 3,
+    title: (
+      <Box display="flex" alignItems="center" gap={2} width={400}>
+        <Box display="flex" alignItems="center" width={48} justifyContent="end">
+          <Typography
+            display="flex"
+            alignItems="center"
+            justifyContent="end"
+            fontSize={12}
+          >
+            1.3
+          </Typography>
+        </Box>
+        <Typography
+          width={60}
+          color="primary"
+          textAlign="end"
+          fontSize={12}
+          className="underline"
+        >
+          VCB-09
+        </Typography>
+        <Typography
+          flex={1}
+          fontSize={12}
+          pl={1}
+          textOverflow="ellipsis"
+          overflow="hidden"
+          whiteSpace="nowrap"
+        >
+          Rà soát và tư vấn xây dựng chuẩn hoá các hồ sơ
+        </Typography>
+      </Box>
+    ),
+    stackItems: true,
+  },
 ];
 
 const items = [
@@ -195,6 +238,12 @@ enum TimeOptionEnums {
   WEEK = "week",
   MONTH = "month",
   PRECIOUS = "precious",
+}
+
+function areMonthDayEqual(date1: Date, date2: Date) {
+  return (
+    date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate()
+  );
 }
 
 function App() {
@@ -272,6 +321,10 @@ function App() {
             (
               timeOption === TimeOptionEnums.MONTH
                 ? isLastDayOfMonth(end)
+                : timeOption === TimeOptionEnums.PRECIOUS
+                ? lastDayOfPrecious.find((item) => {
+                    return areMonthDayEqual(item, new Date(end));
+                  })
                 : isSunday(end)
             )
               ? `border-right`
@@ -312,54 +365,6 @@ function App() {
               }}
               className="header"
             />
-            {/* <DateHeader
-              labelFormat={(time) => moment(time[0]).format("DD")}
-              className="date"
-            /> */}
-            {/* <CustomHeader height={30} unit="isoWeek">
-              {({
-                headerContext: { intervals },
-                getRootProps,
-                getIntervalProps,
-                showPeriod,
-                data,
-              }: any) => {
-                return (
-                  <div {...getRootProps()}>
-                    {intervals.map((interval: any) => {
-                      const intervalStyle = {
-                        lineHeight: "30px",
-                        textAlign: "center",
-                        borderRight: isSunday(interval.startTime.toDate())
-                          ? "2px solid #e3e3e3"
-                          : "",
-                        cursor: "pointer",
-                        backgroundColor: "#f2f2f2",
-                        color: isWeekend(interval.startTime.toDate())
-                          ? "#32a54a"
-                          : "#5c5c5c",
-                        fontWeight: "500",
-                      };
-                      return (
-                        <div
-                          {...getIntervalProps({
-                            interval,
-                            style: intervalStyle,
-                          })}
-                        >
-                          <div className="sticky">
-                            {formatDate(
-                              interval.startTime.toDate(),
-                              "dd-MM-yyy"
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              }}
-            </CustomHeader> */}
             <CustomHeader height={30} unit="day">
               {({
                 headerContext: { intervals },
@@ -375,6 +380,13 @@ function App() {
                         borderRight: (
                           timeOption === TimeOptionEnums.MONTH
                             ? isLastDayOfMonth(interval.startTime.toDate())
+                            : timeOption === TimeOptionEnums.PRECIOUS
+                            ? lastDayOfPrecious.find((item) =>
+                                areMonthDayEqual(
+                                  item,
+                                  new Date(interval.startTime.toDate())
+                                )
+                              )
                             : isSunday(interval.startTime.toDate())
                         )
                           ? "2px solid #e3e3e3"
@@ -382,7 +394,8 @@ function App() {
                         cursor: "pointer",
                         backgroundColor: "#f2f2f2",
                         color: (
-                          timeOption === TimeOptionEnums.MONTH
+                          timeOption === TimeOptionEnums.MONTH ||
+                          timeOption === TimeOptionEnums.PRECIOUS
                             ? isLastDayOfMonth(interval.startTime.toDate())
                             : isWeekend(interval.startTime.toDate())
                         )
