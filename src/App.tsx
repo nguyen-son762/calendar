@@ -17,8 +17,8 @@ import moment from "moment";
 import "moment/locale/vi";
 moment.locale("vi");
 import Moment from "react-moment";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
+import { format, isSunday, isWeekend } from "date-fns";
+import { da, vi } from "date-fns/locale";
 
 export const formatDate = (
   date: Date | string | number,
@@ -93,19 +93,20 @@ const groups = [
   {
     id: 1,
     title: (
-      <Box display="flex" alignItems="center" pl={2} gap={2} width={300}>
+      <Box display="flex" alignItems="center" gap={2} width={400}>
+        <Box display="flex" alignItems="center" width={48}>
+          <ExpandMoreIcon />
+          <Typography
+            display="flex"
+            alignItems="center"
+            justifyContent="end"
+            fontSize={14}
+          >
+            1.1
+          </Typography>
+        </Box>
         <Typography
-          width={48}
-          display="flex"
-          alignItems="center"
-          justifyContent="end"
-          fontSize={14}
-        >
-          1.1
-        </Typography>
-        <Typography
-          width={80}
-          textAlign="end"
+          width={60}
           color="primary"
           fontSize={14}
           className="underline"
@@ -114,7 +115,6 @@ const groups = [
         </Typography>
         <Typography
           flex={1}
-          pl={1}
           fontSize={14}
           textOverflow="ellipsis"
           overflow="hidden"
@@ -124,8 +124,45 @@ const groups = [
         </Typography>
       </Box>
     ),
+    stackItems: true,
   },
-  { id: 2, title: "group 2" },
+  {
+    id: 2,
+    title: (
+      <Box display="flex" alignItems="center" gap={2} width={400}>
+        <Box display="flex" alignItems="center" width={48} justifyContent="end">
+          <Typography
+            display="flex"
+            alignItems="center"
+            justifyContent="end"
+            fontSize={12}
+          >
+            1.2
+          </Typography>
+        </Box>
+        <Typography
+          width={60}
+          color="primary"
+          textAlign="end"
+          fontSize={12}
+          className="underline"
+        >
+          VCB-09
+        </Typography>
+        <Typography
+          flex={1}
+          fontSize={12}
+          pl={1}
+          textOverflow="ellipsis"
+          overflow="hidden"
+          whiteSpace="nowrap"
+        >
+          Cung cấp thông tin cho Rồng Việt
+        </Typography>
+      </Box>
+    ),
+    stackItems: true,
+  },
 ];
 
 const items = [
@@ -140,27 +177,13 @@ const items = [
   },
   {
     id: 2,
-    group: 2,
+    group: 1,
     title: "",
     start_time: moment("09-01-2023"),
     end_time: moment("09-21-2023"),
     stackItems: true,
     className: "down",
   },
-  // {
-  //   id: 2,
-  //   group: 2,
-  //   title: "item 2",
-  //   start_time: moment().add(-0.5, "hour"),
-  //   end_time: moment().add(0.5, "hour"),
-  // },
-  // {
-  //   id: 3,
-  //   group: 1,
-  //   title: "item 3",
-  //   start_time: moment().add(2, "hour"),
-  //   end_time: moment().add(3, "hour"),
-  // },
 ];
 
 function App() {
@@ -183,26 +206,25 @@ function App() {
                     {...getRootProps()}
                     style={{
                       width: "399px",
-                      background: "#e5e5e5",
+                      background: "#f2f2f2",
                     }}
                   >
-                    {" "}
                     <Box
                       display="flex"
                       alignItems="center"
                       paddingY={2}
-                      bgcolor="#e5e5e5"
+                      bgcolor="#f2f2f2"
                       pl={2}
                       gap={2}
                     >
                       <Box width={48}>WBS</Box>
-                      <Box width={80}>Mã CV</Box>
+                      <Box width={60}>Mã CV</Box>
                       <Box flex={1}>Tên công việc</Box>
                     </Box>
                   </div>
                 );
               }}
-            </SidebarHeader>{" "}
+            </SidebarHeader>
             <DateHeader
               unit="primaryHeader"
               labelFormat={(time) => {
@@ -210,10 +232,95 @@ function App() {
               }}
               className="header"
             />
-            <DateHeader
+            {/* <DateHeader
               labelFormat={(time) => moment(time[0]).format("DD")}
               className="date"
-            />
+            /> */}
+            {/* <CustomHeader height={30} unit="isoWeek">
+              {({
+                headerContext: { intervals },
+                getRootProps,
+                getIntervalProps,
+                showPeriod,
+                data,
+              }: any) => {
+                return (
+                  <div {...getRootProps()}>
+                    {intervals.map((interval: any) => {
+                      const intervalStyle = {
+                        lineHeight: "30px",
+                        textAlign: "center",
+                        borderRight: isSunday(interval.startTime.toDate())
+                          ? "2px solid #e3e3e3"
+                          : "",
+                        cursor: "pointer",
+                        backgroundColor: "#f2f2f2",
+                        color: isWeekend(interval.startTime.toDate())
+                          ? "#32a54a"
+                          : "#5c5c5c",
+                        fontWeight: "500",
+                      };
+                      return (
+                        <div
+                          {...getIntervalProps({
+                            interval,
+                            style: intervalStyle,
+                          })}
+                        >
+                          <div className="sticky">
+                            {formatDate(
+                              interval.startTime.toDate(),
+                              "dd-MM-yyy"
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              }}
+            </CustomHeader> */}
+            <CustomHeader height={30} unit="day">
+              {({
+                headerContext: { intervals },
+                getRootProps,
+                getIntervalProps,
+                showPeriod,
+                data,
+              }: any) => {
+                return (
+                  <div {...getRootProps()}>
+                    {intervals.map((interval: any) => {
+                      const intervalStyle = {
+                        lineHeight: "30px",
+                        textAlign: "center",
+                        borderRight: isSunday(interval.startTime.toDate())
+                          ? "2px solid #e3e3e3"
+                          : "",
+                        cursor: "pointer",
+                        backgroundColor: "#f2f2f2",
+                        color: isWeekend(interval.startTime.toDate())
+                          ? "#32a54a"
+                          : "#5c5c5c",
+                        fontWeight: "500",
+                      };
+                      return (
+                        <div
+                          {...getIntervalProps({
+                            interval,
+                            style: intervalStyle,
+                          })}
+                        >
+                          <div className="sticky">
+                            {formatDate(interval.startTime.toDate(), "dd")}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              }}
+            </CustomHeader>
           </TimelineHeaders>
         </Timeline>
       </Box>
