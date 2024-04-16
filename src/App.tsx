@@ -10,8 +10,6 @@ import Timeline, {
 } from "react-calendar-timeline";
 import "react-calendar-timeline/lib/Timeline.css";
 import moment from "moment";
-import "moment/locale/vi";
-moment.locale("vi");
 import {
   format,
   isLastDayOfMonth,
@@ -21,7 +19,7 @@ import {
   sub,
 } from "date-fns";
 import { vi } from "date-fns/locale";
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 
 const lastDayOfPrecious = [
   new Date("02/28/2024"),
@@ -41,63 +39,6 @@ export const formatDate = (
     locale: vi,
   });
 };
-
-const WBS_LIST = [
-  {
-    id: "1",
-    code: "VCB-09",
-    name: "GIAI ĐOẠN 1: RÀ SOÁT CHUẨN HOÁ HỒ SƠ",
-    sub_menu: [
-      {
-        id: "1.1",
-        code: "VCB-09",
-        name: "Cung cấp thông tin cho Rồng Việt",
-      },
-      {
-        id: "1.2",
-        code: "VCB-09",
-        name: "Rà soát và tư vấn xây dựng chuẩn hoá các hồ sơ",
-      },
-    ],
-  },
-  {
-    id: "2",
-    code: "VCB-09",
-    name: "GIAI ĐOẠN 2: CHÀO BÁN CỔ PHIẾU...",
-    sub_menu: [
-      {
-        id: "2.1",
-        code: "VCB-09",
-        name: "Tư vấn  xây dựng phương án IPO cho DN.",
-      },
-      {
-        id: "2.2",
-        code: "VCB-09",
-        name: "Tổ chức học ĐHĐCĐ thông qua phương án IPO",
-      },
-      {
-        id: "2.3",
-        code: "VCB-09",
-        name: "Xây dựng chuẩn bị và nộp hồ sơ đăng kí IPO",
-      },
-      {
-        id: "2.2",
-        code: "VCB-09",
-        name: "Giải trình và bổ sung hồ sơ theo yêu cầu của...",
-      },
-      {
-        id: "2.1",
-        code: "VCB-09",
-        name: "UBCKNN cấp giấy CN chào bán cho DN",
-      },
-      {
-        id: "2.2",
-        code: "VCB-09",
-        name: "Triển khai thực hiện IPO",
-      },
-    ],
-  },
-];
 
 const groups = [
   {
@@ -217,8 +158,8 @@ const items = [
     id: 1,
     group: 1,
     title: "",
-    start_time: moment("08-30-2023"),
-    end_time: moment("09-15-2023"),
+    start_time: moment("08-30-2024"),
+    end_time: moment("09-15-2024"),
     stackItems: true,
     className: "up",
   },
@@ -226,8 +167,8 @@ const items = [
     id: 2,
     group: 1,
     title: "",
-    start_time: moment("09-01-2023"),
-    end_time: moment("09-21-2023"),
+    start_time: moment("09-01-2024"),
+    end_time: moment("09-21-2024"),
     stackItems: true,
     className: "down",
   },
@@ -245,28 +186,29 @@ function areMonthDayEqual(date1: Date, date2: Date) {
     date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate()
   );
 }
-const ZOOM_OPTIONS = {
-  DATE: 86400000,
-  MONTH: 60 * 60 * 1000 * 24 * 10,
-  PRECIOUS: 86400000 * 2,
-};
+
 function App() {
   const [timeOption, setTimeOption] = useState<TimeOptionEnums>(
     TimeOptionEnums.WEEK
   );
-  const [minZoom, setMinZoom] = useState(ZOOM_OPTIONS.MONTH);
-  useEffect(() => {
-    if (timeOption === TimeOptionEnums.MONTH) {
-      setMinZoom(ZOOM_OPTIONS.MONTH);
+  const timelineRef = useRef<any>(null);
+  const changeTime = (value: TimeOptionEnums) => {
+    setTimeOption(value);
+    let newZoom;
+    if (value === TimeOptionEnums.MONTH) {
+      newZoom = 60 * 60 * 1000 * 24 * 80;
+    } else if (value === TimeOptionEnums.WEEK) {
+      newZoom = 60 * 60 * 1000 * 24 * 40;
+    } else {
+      newZoom = 60 * 60 * 1000 * 24 * 300;
     }
-    if (timeOption === TimeOptionEnums.PRECIOUS) {
-      setMinZoom(ZOOM_OPTIONS.PRECIOUS);
-    }
-    if (timeOption === TimeOptionEnums.WEEK) {
-      setMinZoom(ZOOM_OPTIONS.DATE);
-    }
-    console.warn("hehe");
-  }, [timeOption]);
+    const newVisibleTimeStart = Math.round(Math.abs(new Date().getTime()));
+    timelineRef.current.updateScrollCanvas(
+      newVisibleTimeStart,
+      newVisibleTimeStart + newZoom,
+      false
+    );
+  };
 
   return (
     <Box>
@@ -300,7 +242,7 @@ function App() {
             px={1}
             borderRadius="4px"
             className="cursor-pointer"
-            onClick={() => setTimeOption(TimeOptionEnums.WEEK)}
+            onClick={() => changeTime(TimeOptionEnums.WEEK)}
           >
             <Typography>Tuần</Typography>
           </Box>
@@ -311,7 +253,7 @@ function App() {
             px={1}
             borderRadius="4px"
             className="cursor-pointer"
-            onClick={() => setTimeOption(TimeOptionEnums.MONTH)}
+            onClick={() => changeTime(TimeOptionEnums.MONTH)}
           >
             <Typography>Tháng</Typography>
           </Box>
@@ -322,7 +264,7 @@ function App() {
             px={1}
             borderRadius="4px"
             className="cursor-pointer"
-            onClick={() => setTimeOption(TimeOptionEnums.PRECIOUS)}
+            onClick={() => changeTime(TimeOptionEnums.PRECIOUS)}
           >
             <Typography>Quý</Typography>
           </Box>
@@ -330,31 +272,19 @@ function App() {
         <Timeline
           groups={groups}
           items={items}
-          defaultTimeStart={moment(new Date("08-25-2023")).toDate()}
-          defaultTimeEnd={moment(new Date("09-25-2023")).toDate()}
-          visibleTimeStart={moment(new Date("08-25-2023")).toDate()}
-          visibleTimeEnd={moment(new Date("09-25-2023")).toDate()}
+          defaultTimeStart={moment(new Date("08-25-2024")).toDate()}
+          defaultTimeEnd={moment(new Date("09-25-2024")).toDate()}
           className="calendar"
           sidebarWidth={400}
-          // keys={{
-          //   groupIdKey: "id",
-          //   groupTitleKey: "title",
-          //   itemIdKey: "id",
-          //   itemTitleKey: "title",
-          //   itemDivTitleKey: "title",
-          //   itemGroupKey: "group",
-          //   itemTimeStartKey: "start",
-          //   itemTimeEndKey: "end",
-          // }}
+          ref={timelineRef}
           timeSteps={{
             second: 0,
             minute: 0,
             hour: 0,
             day: 1,
-            month: 3,
+            month: timeOption === TimeOptionEnums.PRECIOUS ? 3 : 1,
             year: 0,
           }}
-          onZoom={(e) => console.warn("e", e)}
           verticalLineClassNamesForTime={(start, end) => [
             (
               timeOption === TimeOptionEnums.MONTH
@@ -372,7 +302,6 @@ function App() {
           <TimelineHeaders>
             <SidebarHeader>
               {({ getRootProps }) => {
-                console.warn("m", minZoom);
                 return (
                   <div
                     {...getRootProps()}
@@ -397,14 +326,99 @@ function App() {
                 );
               }}
             </SidebarHeader>
-            <DateHeader
-              height={50}
-              unit="primaryHeader"
-              labelFormat={(time) => {
-                return formatDate(time[1].toDate());
-              }}
-              className="header"
-            />
+            {timeOption !== TimeOptionEnums.PRECIOUS && (
+              <DateHeader
+                height={50}
+                unit="primaryHeader"
+                labelFormat={(time) => {
+                  return formatDate(time[1].toDate());
+                }}
+                className="header"
+              />
+            )}
+            {timeOption === TimeOptionEnums.PRECIOUS && (
+              <DateHeader
+                height={50}
+                unit="year"
+                intervalRenderer={({
+                  getIntervalProps,
+                  intervalContext,
+                  data,
+                }: any) => {
+                  return (
+                    <Box
+                      {...getIntervalProps()}
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      bgcolor="#f2f2f2"
+                      height={60}
+                    >
+                      <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        borderRight="1px solid #e3e3e3"
+                        flex={1}
+                        fontSize={12}
+                        height="100%"
+                      >
+                        Tháng 1 - Tháng 3/
+                        {formatDate(
+                          intervalContext.interval.startTime.toDate(),
+                          "yyyy"
+                        )}
+                      </Box>
+                      <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        borderRight="1px solid #e3e3e3"
+                        flex={1}
+                        fontSize={12}
+                        height="100%"
+                      >
+                        Tháng 4 - Tháng 6/
+                        {formatDate(
+                          intervalContext.interval.startTime.toDate(),
+                          "yyyy"
+                        )}
+                      </Box>
+                      <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        borderRight="1px solid #e3e3e3"
+                        flex={1}
+                        fontSize={12}
+                        height="100%"
+                      >
+                        Tháng 7 - Tháng 9/
+                        {formatDate(
+                          intervalContext.interval.startTime.toDate(),
+                          "yyyy"
+                        )}
+                      </Box>
+                      <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        borderRight="1px solid #e3e3e3"
+                        flex={1}
+                        fontSize={12}
+                        height="100%"
+                      >
+                        Tháng 10 - Tháng 12/
+                        {formatDate(
+                          intervalContext.interval.startTime.toDate(),
+                          "yyyy"
+                        )}
+                      </Box>
+                    </Box>
+                  );
+                }}
+              />
+            )}
             {timeOption === TimeOptionEnums.WEEK && (
               <CustomHeader height={30} unit="day">
                 {({
