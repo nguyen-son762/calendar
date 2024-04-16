@@ -7,6 +7,8 @@ import Timeline, {
   DateHeader,
   SidebarHeader,
   TimelineHeaders,
+  TimelineMarkers,
+  TodayMarker,
 } from "react-calendar-timeline";
 import "react-calendar-timeline/lib/Timeline.css";
 import moment from "moment";
@@ -299,6 +301,22 @@ function App() {
               : "border-unset",
           ]}
         >
+          <TimelineMarkers>
+            <TodayMarker>
+              {({ styles }) => (
+                // date is value of current date. Use this to render special styles for the marker
+                // or any other custom logic based on date:
+                // e.g. styles = {...styles, backgroundColor: isDateInAfternoon(date) ? 'red' : 'limegreen'}
+                <div
+                  style={{
+                    ...styles,
+                    background: "#32a54b",
+                  }}
+                  className="marker-today"
+                ></div>
+              )}
+            </TodayMarker>
+          </TimelineMarkers>
           <TimelineHeaders>
             <SidebarHeader>
               {({ getRootProps }) => {

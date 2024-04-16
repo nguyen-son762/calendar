@@ -50,3 +50,33 @@
   border-left: unset !important;
   border-right: 1px solid #f2f2f2 !important;
 }
+
+.marker-today {
+  position: relative;
+}
+
+.marker-today::before {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 8px solid #32a54b;
+}
+
+.marker-today::after {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 8px solid #32a54b;
+}
