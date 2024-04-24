@@ -1,0 +1,73 @@
+{
+    "report_id": "RP001",
+    "report_name": "Báo cáo tình hình thực hiện kế hoạch kinh doanh",
+    "report_data": [
+        {
+            "group_name": "1. Số hợp đồng ký mới",
+            "group_code": "new_contract",
+            "departments": [
+                {
+                    "department": "IB Hội sở",
+                    "targets": {
+                        "annual_plan": 636945,
+                        "start_of_month": 2,
+                        "increment_in_month": 0,
+                        "cumulative_to_date": 2,
+                        "completion_percentage": 0
+                    }
+                },
+                {
+                    "department": "IB Hội sở 2",
+                    "targets": {
+                        "annual_plan": 30666,
+                        "start_of_month": 2,
+                        "increment_in_month": 0,
+                        "cumulative_to_date": 2,
+                        "completion_percentage": 0
+                    }
+                }
+            ],
+            "total": {
+                "annual_plan": 667611,
+                "start_of_month": 4,
+                "increment_in_month": 0,
+                "cumulative_to_date": 4,
+                "completion_percentage": 0
+            }
+        },
+        {
+            "group_name": "2. Doanh thu (triệu đồng)",
+            "group_code": "revenue",
+            "departments": [
+                {
+                    "department": "IB Hội sở A",
+                    "targets": {
+                        "annual_plan": 123747756,
+                        "start_of_month": 64766097,
+                        "increment_in_month": 111111,
+                        "cumulative_to_date": 64877208,
+                        "completion_percentage": 52
+                    }
+                },
+                {
+                    "department": "IB Hội sở B",
+                    "targets": {
+                        "annual_plan": 18666,
+                        "start_of_month": 64766097,
+                        "increment_in_month": 111111,
+                        "cumulative_to_date": 64877208,
+                        "completion_percentage": 13
+                    }
+                }
+            ],
+            "total": {
+                "annual_plan": 123766422,
+                "start_of_month": 129532194,
+                "increment_in_month": 222222,
+                "cumulative_to_date": 129754416,
+                "completion_percentage": 105
+            }
+        }
+    ],
+    "report_code": "RP001"
+}

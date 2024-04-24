@@ -80,3 +80,17 @@
   border-right: 4px solid transparent;
   border-bottom: 8px solid #32a54b;
 }
+
+table {
+  width: 100%;
+}
+
+table,
+th,
+td {
+  border: 1px solid #c5c5c5;
+  border-collapse: collapse;
+}
+td {
+  padding: 12px;
+}
