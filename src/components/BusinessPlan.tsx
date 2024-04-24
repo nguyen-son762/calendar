@@ -4,8 +4,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import { makeStyles } from "@mui/styles";
 import data from "../data/bussiness_plan.json";
-import { DownloadTableExcel } from "react-export-table-to-excel";
-
+import * as XLSX from "xlsx";
 export interface Root {
   report_id: string;
   report_name: string;
@@ -60,6 +59,16 @@ const BusinessPlan = () => {
   const classess = useStyles();
   const tableRef = useRef(null);
   const table2Ref = useRef(null);
+  const downloadExcel = () => {
+    var workbook = XLSX.utils.table_to_book(tableRef.current);
+
+    // Process Data (add a new row)
+    const ws = workbook.Sheets["Sheet1"];
+    XLSX.utils.sheet_add_aoa(ws, [[]], {
+      origin: -1,
+    });
+    XLSX.writeFile(workbook, "data.xlsx");
+  };
 
   return (
     <Box>
@@ -123,28 +132,21 @@ const BusinessPlan = () => {
         <Button variant="outlined" color="success">
           Run Report
         </Button>
-        <DownloadTableExcel
-          filename="data"
-          sheet="users"
-          currentTableRef={tableRef.current}
-        >
-          <Button variant="outlined">
-            <FileUploadOutlinedIcon />
-            <span
-              style={{
-                display: "inline-block",
-                marginTop: 2,
-              }}
-            >
-              Export File
-            </span>
-          </Button>
-        </DownloadTableExcel>
+        <Button variant="outlined" onClick={downloadExcel}>
+          <FileUploadOutlinedIcon />
+          <span
+            style={{
+              display: "inline-block",
+              marginTop: 2,
+            }}
+          >
+            Export File
+          </span>
+        </Button>
       </Box>
       <Typography variant="h5" fontWeight={600} color="green" mt={4} mb={3}>
         Báo cáo tình hình thực hiện kế hoạch kinh doanh
       </Typography>
-
       <table style={{ minWidth: 650 }} aria-label="simple table" ref={tableRef}>
         <thead
           style={{
@@ -236,32 +238,26 @@ const BusinessPlan = () => {
           })}
         </tbody>
       </table>
-
       <Typography variant="h5" fontWeight={600} color="green" mt={4} mb={3}>
         Báo cáo tình hình thực hiện các dự án
       </Typography>
-      <DownloadTableExcel
-        filename="data2"
-        sheet="users"
-        currentTableRef={table2Ref.current}
+      <Button
+        variant="outlined"
+        sx={{
+          marginBottom: 4,
+        }}
+        onClick={downloadExcel}
       >
-        <Button
-          variant="outlined"
-          sx={{
-            marginBottom: 4,
+        <FileUploadOutlinedIcon />
+        <span
+          style={{
+            display: "inline-block",
+            marginTop: 2,
           }}
         >
-          <FileUploadOutlinedIcon />
-          <span
-            style={{
-              display: "inline-block",
-              marginTop: 2,
-            }}
-          >
-            Export File
-          </span>
-        </Button>
-      </DownloadTableExcel>
+          Export File
+        </span>
+      </Button>
       <table style={{ minWidth: 650 }} ref={table2Ref}>
         <thead
           style={{
