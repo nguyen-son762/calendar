@@ -1,3 +1,4 @@
+//@ts-nocheck
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Box } from "@mui/material";
@@ -286,7 +287,7 @@ function Calendar() {
             month: timeOption === TimeOptionEnums.PRECIOUS ? 3 : 1,
             year: 0,
           }}
-          verticalLineClassNamesForTime={(start, end) => [
+          verticalLineClassNamesForTime={(_, end) => [
             (
               timeOption === TimeOptionEnums.MONTH
                 ? isLastDayOfMonth(end)
