@@ -70,6 +70,17 @@ const BusinessPlan = () => {
     XLSX.writeFile(workbook, "data.xlsx");
   };
 
+  const downloadExcel2 = () => {
+    var workbook = XLSX.utils.table_to_book(table2Ref.current);
+
+    // Process Data (add a new row)
+    const ws = workbook.Sheets["Sheet1"];
+    XLSX.utils.sheet_add_aoa(ws, [[]], {
+      origin: -1,
+    });
+    XLSX.writeFile(workbook, "data2.xlsx");
+  };
+
   return (
     <Box>
       <Box display="flex" alignItems="center" gap={3} flexWrap="wrap">
@@ -246,7 +257,7 @@ const BusinessPlan = () => {
         sx={{
           marginBottom: 4,
         }}
-        onClick={downloadExcel}
+        onClick={downloadExcel2}
       >
         <FileUploadOutlinedIcon />
         <span
