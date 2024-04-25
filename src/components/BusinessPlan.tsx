@@ -4,7 +4,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import { makeStyles } from "@mui/styles";
 import data from "../data/bussiness_plan.json";
-import * as XLSX from "xlsx";
+import * as XLSX from "xlsx-js-style";
+
 export interface Root {
   report_id: string;
   report_name: string;
@@ -60,24 +61,68 @@ const BusinessPlan = () => {
   const tableRef = useRef(null);
   const table2Ref = useRef(null);
   const downloadExcel = () => {
-    var workbook = XLSX.utils.table_to_book(tableRef.current);
-
-    // Process Data (add a new row)
-    const ws = workbook.Sheets["Sheet1"];
-    XLSX.utils.sheet_add_aoa(ws, [[]], {
-      origin: -1,
-    });
+    const workbook = XLSX.utils.table_to_book(tableRef.current);
+    workbook.Sheets["Sheet1"]["A1"].s = {
+      fill: {
+        patternType: "solid",
+        fgColor: { rgb: "f2f2f2" },
+      },
+      alignment: {
+        vertical: "center",
+        horizontal: "center",
+      },
+      font: {
+        // sz: 16,
+        color: { rgb: "000" },
+        // bold: false,
+        // italic: false,
+        // underline: false,
+      },
+    };
+    workbook.Sheets["Sheet1"]["B1"].s = workbook.Sheets["Sheet1"]["A1"].s;
+    workbook.Sheets["Sheet1"]["C1"].s = workbook.Sheets["Sheet1"]["A1"].s;
+    workbook.Sheets["Sheet1"]["C2"].s = workbook.Sheets["Sheet1"]["A1"].s;
+    workbook.Sheets["Sheet1"]["D2"].s = workbook.Sheets["Sheet1"]["A1"].s;
+    workbook.Sheets["Sheet1"]["E2"].s = workbook.Sheets["Sheet1"]["A1"].s;
+    workbook.Sheets["Sheet1"]["F1"].s = workbook.Sheets["Sheet1"]["A1"].s;
     XLSX.writeFile(workbook, "data.xlsx");
   };
 
   const downloadExcel2 = () => {
-    var workbook = XLSX.utils.table_to_book(table2Ref.current);
-
-    // Process Data (add a new row)
-    const ws = workbook.Sheets["Sheet1"];
-    XLSX.utils.sheet_add_aoa(ws, [[]], {
-      origin: -1,
+    const workbook = XLSX.utils.table_to_book(table2Ref.current);
+    Object.keys(workbook.Sheets["Sheet1"]).map((key) => {
+      if (key.includes("A")) {
+        workbook.Sheets["Sheet1"][key].s = {
+          alignment: {
+            vertical: "center",
+          },
+        };
+      }
     });
+    workbook.Sheets["Sheet1"]["A1"].s = {
+      fill: {
+        patternType: "solid",
+        fgColor: { rgb: "f2f2f2" },
+      },
+      alignment: {
+        vertical: "center",
+        horizontal: "center",
+      },
+      font: {
+        // sz: 16,
+        color: { rgb: "000" },
+        // bold: false,
+        // italic: false,
+        // underline: false,
+      },
+    };
+    workbook.Sheets["Sheet1"]["B1"].s = workbook.Sheets["Sheet1"]["A1"].s;
+    workbook.Sheets["Sheet1"]["C1"].s = workbook.Sheets["Sheet1"]["A1"].s;
+    workbook.Sheets["Sheet1"]["D1"].s = workbook.Sheets["Sheet1"]["A1"].s;
+    workbook.Sheets["Sheet1"]["E1"].s = workbook.Sheets["Sheet1"]["A1"].s;
+    workbook.Sheets["Sheet1"]["F1"].s = workbook.Sheets["Sheet1"]["A1"].s;
+    workbook.Sheets["Sheet1"]["F2"].s = workbook.Sheets["Sheet1"]["A1"].s;
+    workbook.Sheets["Sheet1"]["G2"].s = workbook.Sheets["Sheet1"]["A1"].s;
     XLSX.writeFile(workbook, "data2.xlsx");
   };
 
@@ -158,7 +203,11 @@ const BusinessPlan = () => {
       <Typography variant="h5" fontWeight={600} color="green" mt={4} mb={3}>
         Báo cáo tình hình thực hiện kế hoạch kinh doanh
       </Typography>
-      <table style={{ minWidth: 650 }} aria-label="simple table" ref={tableRef}>
+      <table
+        style={{ minWidth: 650, color: "red" }}
+        aria-label="simple table"
+        ref={tableRef}
+      >
         <thead
           style={{
             background: "#f2f2f2",
@@ -166,7 +215,13 @@ const BusinessPlan = () => {
           }}
         >
           <tr>
-            <td rowSpan={2} align="center">
+            <td
+              rowSpan={2}
+              align="center"
+              style={{
+                color: "red",
+              }}
+            >
               Chỉ tiêu
             </td>
             <td rowSpan={2} align="center">
