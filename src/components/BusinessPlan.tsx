@@ -236,11 +236,7 @@ const BusinessPlan = () => {
       <Typography variant="h5" fontWeight={600} color="green" mt={4} mb={3}>
         Báo cáo tình hình thực hiện kế hoạch kinh doanh
       </Typography>
-      <table
-        style={{ minWidth: 650, color: "red" }}
-        aria-label="simple table"
-        ref={tableRef}
-      >
+      <table aria-label="simple table" ref={tableRef}>
         <thead
           style={{
             background: "#f2f2f2",
@@ -248,13 +244,7 @@ const BusinessPlan = () => {
           }}
         >
           <tr>
-            <td
-              rowSpan={2}
-              align="center"
-              style={{
-                color: "red",
-              }}
-            >
+            <td rowSpan={2} align="center">
               Chỉ tiêu
             </td>
             <td rowSpan={2} align="center">
