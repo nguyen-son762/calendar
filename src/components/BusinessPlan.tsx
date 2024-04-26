@@ -56,6 +56,25 @@ const useStyles = makeStyles({
   },
 });
 
+const border = {
+  top: {
+    style: "thin",
+    color: { rgb: "dbdbdb" },
+  },
+  right: {
+    style: "thin",
+    color: { rgb: "dbdbdb" },
+  },
+  bottom: {
+    style: "thin",
+    color: { rgb: "dbdbdb" },
+  },
+  left: {
+    style: "thin",
+    color: { rgb: "dbdbdb" },
+  },
+};
+
 const BusinessPlan = () => {
   const classess = useStyles();
   const tableRef = useRef(null);
@@ -71,6 +90,7 @@ const BusinessPlan = () => {
         vertical: "center",
         horizontal: "center",
       },
+      border,
       font: {
         // sz: 16,
         color: { rgb: "000" },
@@ -79,6 +99,11 @@ const BusinessPlan = () => {
         // underline: false,
       },
     };
+
+    workbook.Sheets["Sheet1"]["A2"] = workbook.Sheets["Sheet1"]["A1"];
+    workbook.Sheets["Sheet1"]["B2"] = workbook.Sheets["Sheet1"]["A1"];
+    workbook.Sheets["Sheet1"]["F2"] = workbook.Sheets["Sheet1"]["A1"];
+
     workbook.Sheets["Sheet1"]["B1"].s = workbook.Sheets["Sheet1"]["A1"].s;
     workbook.Sheets["Sheet1"]["C1"].s = workbook.Sheets["Sheet1"]["A1"].s;
     workbook.Sheets["Sheet1"]["C2"].s = workbook.Sheets["Sheet1"]["A1"].s;
@@ -96,18 +121,20 @@ const BusinessPlan = () => {
           alignment: {
             vertical: "center",
           },
+          border,
         };
       }
     });
     workbook.Sheets["Sheet1"]["A1"].s = {
       fill: {
         patternType: "solid",
-        fgColor: { rgb: "f2f2f2" },
+        fgColor: { rgb: "f0f0f0" },
       },
       alignment: {
         vertical: "center",
         horizontal: "center",
       },
+      border,
       font: {
         // sz: 16,
         color: { rgb: "000" },
@@ -116,6 +143,13 @@ const BusinessPlan = () => {
         // underline: false,
       },
     };
+    workbook.Sheets["Sheet1"]["A2"] = workbook.Sheets["Sheet1"]["A1"];
+    workbook.Sheets["Sheet1"]["B2"] = workbook.Sheets["Sheet1"]["A1"];
+    workbook.Sheets["Sheet1"]["C2"] = workbook.Sheets["Sheet1"]["A1"];
+    workbook.Sheets["Sheet1"]["D2"] = workbook.Sheets["Sheet1"]["A1"];
+    workbook.Sheets["Sheet1"]["E2"] = workbook.Sheets["Sheet1"]["A1"];
+    workbook.Sheets["Sheet1"]["G1"] = workbook.Sheets["Sheet1"]["A1"];
+
     workbook.Sheets["Sheet1"]["B1"].s = workbook.Sheets["Sheet1"]["A1"].s;
     workbook.Sheets["Sheet1"]["C1"].s = workbook.Sheets["Sheet1"]["A1"].s;
     workbook.Sheets["Sheet1"]["D1"].s = workbook.Sheets["Sheet1"]["A1"].s;
@@ -123,7 +157,6 @@ const BusinessPlan = () => {
     workbook.Sheets["Sheet1"]["F1"].s = workbook.Sheets["Sheet1"]["A1"].s;
     workbook.Sheets["Sheet1"]["F2"].s = workbook.Sheets["Sheet1"]["A1"].s;
     workbook.Sheets["Sheet1"]["G2"].s = workbook.Sheets["Sheet1"]["A1"].s;
-    XLSX.writeFile(workbook, "data2.xlsx");
   };
 
   return (
